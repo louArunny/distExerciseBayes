@@ -17,9 +17,10 @@ Sie dies!)
 
 _Ohne alpha würde P(money|S) = 0. Da wir für die Berechnung der Wahrscheinlichkeit die Were multiplizieren, wäre anschliessend q = P(money|H) / P(money|S) = 0.1 / 0 = ∞. 
 Somit wäre auch die Mail niemals Spam:
-1/(∞ + 1) = 0
+1/(∞ + 1) = 0_
 
 Basierend auf dieser Formel (die Formel ist in der Implementierung umgekehrt und berechnet direkt die Wahrscheinlichkeit von Spam, nicht Ham):
+
 <img width="343" height="82" alt="image" src="https://github.com/user-attachments/assets/d5e98acc-cd49-4039-895b-953b85b7d43c" />
 
 
