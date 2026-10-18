@@ -20,6 +20,7 @@ Somit wäre auch die Mail niemals Spam:
 1/(∞ + 1) = 0_
 
 Basierend auf dieser Formel (die Formel ist in der Implementierung umgekehrt und berechnet direkt die Wahrscheinlichkeit von Spam, nicht Ham):
+
 <img width="343" height="82" alt="image" src="https://github.com/user-attachments/assets/d5e98acc-cd49-4039-895b-953b85b7d43c" />
 
 
