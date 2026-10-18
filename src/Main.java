@@ -1,6 +1,5 @@
 // c) alpha definition
 
-//static double alpha = 0.000000000000000000000001;
 static double alpha = 0.5;
 
 static double threshold = 0.5;
@@ -35,7 +34,7 @@ void doTest(){
         var res = calulateProbability(d);
         if(res > threshold)failedHams++;
     }
-    System.out.println("Total Mails: "+data.size()+"; Failed Mails: "+failedHams);
+    System.out.println("Ham Mails Test | Total Mails: "+data.size()+"; Failed Mails: "+failedHams);
 
     path = getClass().getResource("spam-test.zip").getPath();
      data = loadWords(path);
@@ -44,14 +43,17 @@ void doTest(){
         var res = calulateProbability(d);
         if(res < threshold) failedSpams++;
     }
-    System.out.println("Total Mails: "+data.size()+"; Failed Mails: "+failedSpams);
+    System.out.println("Spam Mails Test | Total Mails: "+data.size()+"; Failed Mails: "+failedSpams);
 }
 
+//d) Kalibrierung
 void doCalibration(){
     doTraining();
 
     List<CalibrationResult> results = new ArrayList<>();
 
+    System.out.println();
+    System.out.println("Calibration");
     String path = getClass().getResource("ham-kallibrierung.zip").getPath();
     var hamData = loadWords(path);
     path = getClass().getResource("spam-kallibrierung.zip").getPath();
@@ -97,6 +99,7 @@ void doCalibration(){
 
     System.out.println("alpha: "+bli.getAlpha()+" threshold: "+bli.getThreshold()
             +" ham failure "+bli.getFailureRatHam()+" spam failure "+bli.getFailureRateSpam());
+    System.out.println();
 }
 
 void doTraining(){
@@ -133,12 +136,12 @@ double calulateProbability(EmailContent content){
     for (var word : content._words) {
         var m = analysis.get(word.toLowerCase());
         if (m == null) continue;
-        q *= m.get_spamProbability() / m.get_hamProbability();
+        q *= m.get_hamProbability() /  m.get_spamProbability();
         found = true;
     }
 
     if (!found) return 0.5;
-    return 1 - 1 / (q + 1);
+    return  1 / (q + 1);
 }
 
 
@@ -151,7 +154,6 @@ List<EmailContent> loadWords(String filename){
         Enumeration<? extends ZipEntry> entries = zipFile.entries();
         while (entries.hasMoreElements()) {
             ZipEntry entry = entries.nextElement();
-            // Check if entry is a directory
             if (!entry.isDirectory()) {
 
                 try (InputStream inputStream = zipFile.getInputStream(entry)) {
@@ -270,8 +272,7 @@ class MailWord{
            _spamProbability =_spamAmount / countSpamTrainingData;
            _hamProbability = _hamAmount / countHamTrainingData;
 
-//           if(_spamProbability == 0) _spamProbability = alpha;
-//           if(_hamProbability == 0) _hamProbability = alpha;
+
        }
     }
 
