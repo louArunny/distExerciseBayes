@@ -1,29 +1,29 @@
-// c) alpha definition
 
+/// values for calculating spam/ ham probability
 static double alpha = 0.5;
-
 static double threshold = 0.5;
 
+/// amount of training spam and ham mails
 static int countSpamTrainingData = 0;
 static int countHamTrainingData = 0;
+
+/// map which holds the percentage values of the training data and the words
 HashMap<String, MailWord> analysis = new HashMap<>();
 
 
 void main() {
 
-    // a) Spam and ham antrenieren
-
+    // header of the output
     System.out.println("Spamfilter");
     System.out.println("***********");
     System.out.println();
 
+    // calibrate the alpha dn threshold values
     doCalibration();
 
+    // test the calibrated values on the test zips
     System.out.println("Testing");
     doTest();
-
-
-
 }
 
 void doTest(){
@@ -32,21 +32,25 @@ void doTest(){
     int failedHams = 0;
     for(var d: data){
         var res = calulateProbability(d);
-        if(res > threshold)failedHams++;
+        // check if it has been classified correctly
+        if(res >= threshold)failedHams++;
     }
-    System.out.println("Ham Mails Test | Total Mails: "+data.size()+"; Failed Mails: "+failedHams);
+    System.out.println("Ham Mails Test | Total Mails: "+data.size()+"; Failed Mails: "+failedHams
+            +"; korrekt: "+(100.0 - 100.0 * failedHams / data.size())+" %");
 
     path = getClass().getResource("spam-test.zip").getPath();
      data = loadWords(path);
     int failedSpams = 0;
     for(var d: data){
         var res = calulateProbability(d);
-        if(res < threshold) failedSpams++;
+        // check if it has been classified correctly
+        if(res <= threshold) failedSpams++;
     }
-    System.out.println("Spam Mails Test | Total Mails: "+data.size()+"; Failed Mails: "+failedSpams);
+    System.out.println("Spam Mails Test | Total Mails: "+data.size()+"; Failed Mails: "+failedSpams
+            +"; korrekt: "+(100.0 - 100.0 * failedSpams / data.size())+" %");
 }
 
-//d) Kalibrierung
+
 void doCalibration(){
     doTraining();
 
@@ -59,6 +63,7 @@ void doCalibration(){
     path = getClass().getResource("spam-kallibrierung.zip").getPath();
     var spamData = loadWords(path);
 
+    // looping through all the alpha and threshold values
     double loopAlpha = 0.5;
     while(loopAlpha > 0.000000000000000000000001){
 
@@ -90,6 +95,7 @@ void doCalibration(){
         loopAlpha = loopAlpha / 10;
     }
 
+    // get the best alpha and threshold result
     var bli = results.stream()
             .min(Comparator.comparingDouble(r -> r.getFailureRatHam() + r.getFailureRateSpam()))
             .get();
@@ -123,12 +129,14 @@ void doTraining(){
         }
     }
 
+    // calculate the actual percentage out of spam and ham counts
     for(var s : analysis.keySet()){
         analysis.get(s).setPercentage();
     }
 }
 
 //b) function for calculating spam probability
+// it caluclates the percentage of the spam probability directly
 double calulateProbability(EmailContent content){
     double q = 1;
     boolean found = false;
@@ -146,7 +154,7 @@ double calulateProbability(EmailContent content){
 
 
 
-
+/// load all the data from one zip into a list. but all words of one mail are only counted one
 List<EmailContent> loadWords(String filename){
 
     ArrayList<EmailContent> emails = new ArrayList<>();
@@ -162,6 +170,7 @@ List<EmailContent> loadWords(String filename){
 
                     String[] rawwords = content.trim().split("\\s+");
 
+                    // count the words only once
                     Set<String> mySet = new HashSet<>();
                     for (var w : rawwords) {
                         mySet.add(w.toLowerCase());
@@ -200,6 +209,7 @@ void addtoHam(String word){
     }
 }
 
+/// Class to keep track of each calibration result (in the calibration method)
 class CalibrationResult{
 
     private double alpha;
@@ -249,6 +259,7 @@ class CalibrationResult{
     }
 }
 
+/// represents the content of one email (words are only represented once)
 class EmailContent{
     String _filename = "";
     String[] _words;
@@ -259,6 +270,7 @@ class EmailContent{
     }
 }
 
+/// represents the word count, as well as the percentage
 class MailWord{
 
     public void addSpam(){
