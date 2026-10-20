@@ -4,7 +4,8 @@ Dieses Projet wurde von Louana (louana.berger@students.fhnw.ch) und Baran (rojda
 
 ## Output
 Wenn man das Programm ausführt, kommt folgender output:
-<img width="869" height="306" alt="image" src="https://github.com/user-attachments/assets/9f515f9d-6a63-4671-ac1e-08345aca2fa6" />
+<img width="881" height="254" alt="image" src="https://github.com/user-attachments/assets/974c25ed-0d97-4001-bbd1-58c4eeb32c30" />
+
 
 Die gegebenen ZIP Files befinden sich im Ressource-Root des Projekts.
 
